@@ -117,7 +117,7 @@ android {
 
 dependencies {
     // Demo common
-    implementation("org.calypsonet.keyple:keyple-demo-common-lib:2.0.1-SNAPSHOT") { isChanging = true }
+    implementation("org.calypsonet.keyple:keyple-demo-ticketing-common-lib:2.0.2-SNAPSHOT") { isChanging = true }
 
     // Keyple reader plugins proprietary libs
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
