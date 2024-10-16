@@ -4,6 +4,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
+### Changed
+- Rename repository and artifact from `keyple-android-demo-control` to `keyple-demo-ticketing-control-app`
+- Change `minSdk` from `24` -> `26`
+### Upgraded
+- keyple-demo-common-lib `2.0.1-SNAPSHOT` -> keyple-demo-ticketing-common-lib `2.0.2-SNAPSHOT`
+- Keyple components
+  - keyple-service-java-lib `3.3.1` -> `3.3.3`
+  - keyple-card-calypso-java-lib `3.1.3` -> `3.1.4`
 
 ## [2024.09.20]
 ### Fixed
@@ -31,17 +39,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Other components (Gradle wrapper, Android Gradle Plugin, etc.)
 
 ## [2023.12.06]
+### Added
+New dependencies
+- Keypop Crypto Legacy SAM API `0.3.0`
+- Keyple Calypso Crypto LegacySAM Library `0.4.0`
 ### Upgraded
 - Calypsonet Terminal Reader API `1.3.0` -> Keypop Reader API `2.0.0`
 - Calypsonet Terminal Calypso API `1.8.0` -> Keypop Calypso Card API `2.0.0`
 - Keyple Service Library `2.3.1` -> `3.0.1`
 - Keyple Calypso Card Library `2.3.5` -> `3.0.1`
 - Keyple Util Library `2.3.0` -> `2.3.1`
-
-### Added
-New dependencies
-- Keypop Crypto Legacy SAM API `0.3.0`
-- Keyple Calypso Crypto LegacySAM Library `0.4.0`
 
 ## [2023.06.01]
 ### Upgraded
@@ -82,10 +89,10 @@ New dependencies
 - `keyple-plugin-cna-flowbird-android-java-lib-2.0.2-mock` (mocked library)
 - `keyple-util-java-lib:2.3.0`
 
-[Unreleased]: https://github.com/calypsonet/keyple-android-demo-control/compare/2024.09.20...HEAD
-[2024.09.20]: https://github.com/calypsonet/keyple-android-demo-control/compare/2024.04.23...2024.09.20
-[2024.04.23]: https://github.com/calypsonet/keyple-android-demo-control/compare/2023.12.06...2024.04.23
-[2023.12.06]: https://github.com/calypsonet/keyple-android-demo-control/compare/2023.06.01...2023.12.06
-[2023.06.01]: https://github.com/calypsonet/keyple-android-demo-control/compare/2023.02.24...2023.06.01
-[2023.02.24]: https://github.com/calypsonet/keyple-android-demo-control/compare/2022.11.18...2023.02.24
-[2022.11.18]: https://github.com/calypsonet/keyple-android-demo-control/compare/v2021.11...2022.11.18
+[Unreleased]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2024.09.20...HEAD
+[2024.09.20]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2024.04.23...2024.09.20
+[2024.04.23]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2023.12.06...2024.04.23
+[2023.12.06]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2023.06.01...2023.12.06
+[2023.06.01]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2023.02.24...2023.06.01
+[2023.02.24]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/2022.11.18...2023.02.24
+[2022.11.18]: https://github.com/calypsonet/keyple-demo-ticketing-control-app/compare/v2021.11...2022.11.18

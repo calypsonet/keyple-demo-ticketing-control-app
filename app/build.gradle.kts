@@ -54,7 +54,7 @@ android {
 
     defaultConfig {
         applicationId = "org.calypsonet.keyple.demo.control"
-        minSdk = 24
+        minSdk = 26
         //noinspection ExpiredTargetSdkVersion
         targetSdk = 31
         versionName = project.version.toString()
@@ -117,7 +117,7 @@ android {
 
 dependencies {
     // Demo common
-    implementation("org.calypsonet.keyple:keyple-demo-common-lib:2.0.1-SNAPSHOT") { isChanging = true }
+    implementation("org.calypsonet.keyple:keyple-demo-ticketing-common-lib:2.0.2-SNAPSHOT") { isChanging = true }
 
     // Keyple reader plugins proprietary libs
     implementation(fileTree(mapOf("dir" to "libs", "include" to listOf("*.aar"))))
@@ -128,8 +128,8 @@ dependencies {
     implementation("org.eclipse.keypop:keypop-calypso-crypto-legacysam-java-api:0.6.0")
     implementation("org.eclipse.keyple:keyple-common-java-api:2.0.1")
     implementation("org.eclipse.keyple:keyple-util-java-lib:2.4.0")
-    implementation("org.eclipse.keyple:keyple-service-java-lib:3.3.1")
-    implementation("org.eclipse.keyple:keyple-card-calypso-java-lib:3.1.3")
+    implementation("org.eclipse.keyple:keyple-service-java-lib:3.3.3")
+    implementation("org.eclipse.keyple:keyple-card-calypso-java-lib:3.1.4")
     implementation("org.eclipse.keyple:keyple-card-calypso-crypto-legacysam-java-lib:0.8.0")
     implementation("org.eclipse.keyple:keyple-plugin-android-nfc-java-lib:2.2.0")
     // End Keyple configuration
