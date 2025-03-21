@@ -9,9 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Change `minSdk` from `24` -> `26`
 ### Upgraded
 - keyple-demo-common-lib `2.0.1-SNAPSHOT` -> keyple-demo-ticketing-common-lib `2.0.2-SNAPSHOT`
+- Keypop API
+  - keypop-calypso-card-java-api `2.1.0` -> `2.1.2`
+  - keypop-calypso-crypto-legacysam-java-api `0.6.0` -> `0.7.0`
 - Keyple components
-  - keyple-service-java-lib `3.3.1` -> `3.3.3`
-  - keyple-card-calypso-java-lib `3.1.3` -> `3.1.4`
+  - keyple-service-java-lib `3.3.1` -> `3.3.5`
+  - keyple-card-calypso-java-lib `3.1.3` -> `3.1.7`
+  - keyple-card-calypso-crypto-legacysam-java-lib `0.8.0` -> `0.9.0`
+  - keyple-plugin-android-nfc-java-lib `2.2.0` -> `3.0.0`
 
 ## [2024.09.20]
 ### Fixed
