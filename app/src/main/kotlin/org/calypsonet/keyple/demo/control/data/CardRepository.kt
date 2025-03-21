@@ -80,7 +80,11 @@ class CardRepository {
       // Step 2 - Read and unpack environment structure from the binary present in the environment
       // record.
       cardTransaction
-          .prepareReadRecord(CardConstant.SFI_ENVIRONMENT_AND_HOLDER, 1)
+          .prepareReadRecords(
+              CardConstant.SFI_ENVIRONMENT_AND_HOLDER,
+              1,
+              1,
+              CardConstant.ENVIRONMENT_HOLDER_RECORD_SIZE_BYTES)
           .processCommands(ChannelControl.KEEP_OPEN)
 
       val efEnvironmentHolder = calypsoCard.getFileBySfi(CardConstant.SFI_ENVIRONMENT_AND_HOLDER)
@@ -107,7 +111,8 @@ class CardRepository {
 
       // Step 5 - Read and unpack the last event record.
       cardTransaction
-          .prepareReadRecord(CardConstant.SFI_EVENTS_LOG, 1)
+          .prepareReadRecords(
+              CardConstant.SFI_EVENTS_LOG, 1, 1, CardConstant.EVENT_RECORD_SIZE_BYTES)
           .processCommands(ChannelControl.KEEP_OPEN)
 
       val efEventLog = calypsoCard.getFileBySfi(CardConstant.SFI_EVENTS_LOG)
