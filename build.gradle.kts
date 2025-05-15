@@ -46,7 +46,7 @@ tasks {
         kotlin {
             target("**/*.kt")
             ktfmt()
-            licenseHeaderFile("${project.rootDir}/LICENSE_HEADER")
+            licenseHeaderFile("${project.rootDir}/LICENSE_HEADER_BSD_3-CLAUSE")
         }
     }
 }
