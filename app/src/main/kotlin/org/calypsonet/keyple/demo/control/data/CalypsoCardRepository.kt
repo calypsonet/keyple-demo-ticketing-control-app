@@ -34,12 +34,12 @@ import org.eclipse.keypop.calypso.card.transaction.TransactionManager
 import org.eclipse.keypop.reader.CardReader
 import timber.log.Timber
 
-class CardRepository {
+class CalypsoCardRepository {
 
   fun executeControlProcedure(
       controlDateTime: LocalDateTime,
       cardReader: CardReader,
-      calypsoCard: CalypsoCard,
+      smartCard: CalypsoCard,
       cardSecuritySettings: SymmetricCryptoSecuritySetting?,
       locations: List<Location>
   ): CardReaderResponse {
@@ -58,16 +58,16 @@ class CardRepository {
               // Step 1.1
               // The transaction will be certified by the SAM in a secure session.
               calypsoCardApiFactory.createSecureRegularModeTransactionManager(
-                  cardReader, calypsoCard, cardSecuritySettings)
+                  cardReader, smartCard, cardSecuritySettings)
             } else {
               // Step 1.2
               // The transaction will take place without being certified by a SAM
-              calypsoCardApiFactory.createFreeTransactionManager(cardReader, calypsoCard)
+              calypsoCardApiFactory.createFreeTransactionManager(cardReader, smartCard)
             }
           } catch (e: Exception) {
             // TODO check which condition could lead here
             Timber.w(e)
-            calypsoCardApiFactory.createFreeTransactionManager(cardReader, calypsoCard)
+            calypsoCardApiFactory.createFreeTransactionManager(cardReader, smartCard)
           }
 
       if (cardTransaction is SecureRegularModeTransactionManager) {
@@ -85,7 +85,7 @@ class CardRepository {
               CardConstant.ENVIRONMENT_HOLDER_RECORD_SIZE_BYTES)
           .processCommands(ChannelControl.KEEP_OPEN)
 
-      val efEnvironmentHolder = calypsoCard.getFileBySfi(CardConstant.SFI_ENVIRONMENT_AND_HOLDER)
+      val efEnvironmentHolder = smartCard.getFileBySfi(CardConstant.SFI_ENVIRONMENT_AND_HOLDER)
       val env = EnvironmentHolderStructureParser().parse(efEnvironmentHolder.data.content)
 
       // Step 3 - If EnvVersionNumber of the Environment structure is not the expected one (==1 for
@@ -113,7 +113,7 @@ class CardRepository {
               CardConstant.SFI_EVENTS_LOG, 1, 1, CardConstant.EVENT_RECORD_SIZE_BYTES)
           .processCommands(ChannelControl.KEEP_OPEN)
 
-      val efEventLog = calypsoCard.getFileBySfi(CardConstant.SFI_EVENTS_LOG)
+      val efEventLog = smartCard.getFileBySfi(CardConstant.SFI_EVENTS_LOG)
       val event = EventStructureParser().parse(efEventLog.data.content)
 
       // Step 6 - If EventVersionNumber is not the expected one (==1 for the current version) reject
@@ -156,7 +156,7 @@ class CardRepository {
       }
 
       val nbContractRecords =
-          when (calypsoCard.productType) {
+          when (smartCard.productType) {
             CalypsoCard.ProductType.BASIC -> 1
             CalypsoCard.ProductType.LIGHT -> 2
             else -> 4
@@ -172,9 +172,9 @@ class CardRepository {
           .prepareReadCounter(CardConstant.SFI_COUNTERS, nbContractRecords)
           .processCommands(ChannelControl.KEEP_OPEN)
 
-      val efCounters = calypsoCard.getFileBySfi(CardConstant.SFI_COUNTERS)
+      val efCounters = smartCard.getFileBySfi(CardConstant.SFI_COUNTERS)
 
-      val efContracts = calypsoCard.getFileBySfi(CardConstant.SFI_CONTRACTS)
+      val efContracts = smartCard.getFileBySfi(CardConstant.SFI_CONTRACTS)
       val contracts = mutableMapOf<Int, ContractStructure>()
 
       // Step 11 - For each contract:

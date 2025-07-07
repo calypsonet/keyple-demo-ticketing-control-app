@@ -12,13 +12,16 @@ package org.calypsonet.keyple.demo.control.domain
 import android.app.Activity
 import java.time.LocalDateTime
 import javax.inject.Inject
+import org.calypsonet.keyple.card.storagecard.StorageCardExtensionService
 import org.calypsonet.keyple.demo.common.constant.CardConstant
-import org.calypsonet.keyple.demo.control.data.CardRepository
+import org.calypsonet.keyple.demo.control.data.CalypsoCardRepository
 import org.calypsonet.keyple.demo.control.data.ReaderRepository
+import org.calypsonet.keyple.demo.control.data.StorageCardRepository
 import org.calypsonet.keyple.demo.control.data.model.CardReaderResponse
 import org.calypsonet.keyple.demo.control.data.model.Location
 import org.calypsonet.keyple.demo.control.data.model.ReaderType
 import org.calypsonet.keyple.demo.control.di.scope.AppScoped
+import org.calypsonet.keyple.demo.validation.data.model.CardProtocolEnum
 import org.eclipse.keyple.card.calypso.CalypsoExtensionService
 import org.eclipse.keyple.card.calypso.crypto.legacysam.LegacySamExtensionService
 import org.eclipse.keyple.card.calypso.crypto.legacysam.LegacySamUtil
@@ -36,7 +39,10 @@ import org.eclipse.keypop.reader.ReaderApiFactory
 import org.eclipse.keypop.reader.selection.CardSelectionManager
 import org.eclipse.keypop.reader.selection.CardSelectionResult
 import org.eclipse.keypop.reader.selection.ScheduledCardSelectionsResponse
+import org.eclipse.keypop.reader.selection.spi.SmartCard
 import org.eclipse.keypop.reader.spi.CardReaderObserverSpi
+import org.eclipse.keypop.storagecard.card.ProductType
+import org.eclipse.keypop.storagecard.card.StorageCard
 import timber.log.Timber
 
 @AppScoped
@@ -48,8 +54,11 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
       CalypsoExtensionService.getInstance()
   private val calypsoCardApiFactory: CalypsoCardApiFactory =
       calypsoExtensionService.calypsoCardApiFactory
+
+  /** Get the Storage card extension service */
+  private val storageCardExtension = StorageCardExtensionService.getInstance()
   private lateinit var legacySam: LegacySam
-  private lateinit var calypsoCard: CalypsoCard
+  private lateinit var smartCard: SmartCard
   private lateinit var cardSelectionManager: CardSelectionManager
 
   var readersInitialized = false
@@ -62,6 +71,8 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
   private var indexOfCdLightGtmlCardSelection = 0
   private var indexOfCalypsoLightCardSelection = 0
   private var indexOfNavigoIdfCardSelection = 0
+  private var indexOfMifareCardSelection = 0
+  private var indexOfST25CardSelection = 0
 
   @Throws(KeyplePluginException::class, IllegalStateException::class, Exception::class)
   fun init(observer: CardReaderObserverSpi?, activity: Activity, readerType: ReaderType) {
@@ -149,7 +160,7 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
             readerApiFactory
                 .createIsoCardSelector()
                 .filterByDfName(CardConstant.AID_KEYPLE_GENERIC)
-                .filterByCardProtocol(readerRepository.getCardReaderProtocolLogicalName()),
+                .filterByCardProtocol(CardProtocolEnum.ISO_14443_4_LOGICAL_PROTOCOL.name),
             calypsoCardApiFactory.createCalypsoCardSelectionExtension())
 
     // Prepare card selection case #2: CD LIGHT/GTML
@@ -158,7 +169,7 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
             readerApiFactory
                 .createIsoCardSelector()
                 .filterByDfName(CardConstant.AID_CD_LIGHT_GTML)
-                .filterByCardProtocol(readerRepository.getCardReaderProtocolLogicalName()),
+                .filterByCardProtocol(CardProtocolEnum.ISO_14443_4_LOGICAL_PROTOCOL.name),
             calypsoCardApiFactory.createCalypsoCardSelectionExtension())
 
     // Prepare card selection case #3: CALYPSO LIGHT
@@ -167,7 +178,7 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
             readerApiFactory
                 .createIsoCardSelector()
                 .filterByDfName(CardConstant.AID_CALYPSO_LIGHT)
-                .filterByCardProtocol(readerRepository.getCardReaderProtocolLogicalName()),
+                .filterByCardProtocol(CardProtocolEnum.ISO_14443_4_LOGICAL_PROTOCOL.name),
             calypsoCardApiFactory.createCalypsoCardSelectionExtension())
 
     // Prepare card selection case #4: Navigo IDF
@@ -176,8 +187,24 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
             readerApiFactory
                 .createIsoCardSelector()
                 .filterByDfName(CardConstant.AID_NORMALIZED_IDF)
-                .filterByCardProtocol(readerRepository.getCardReaderProtocolLogicalName()),
+                .filterByCardProtocol(CardProtocolEnum.ISO_14443_4_LOGICAL_PROTOCOL.name),
             calypsoCardApiFactory.createCalypsoCardSelectionExtension())
+
+    if (readerRepository.isStorageCardSupported()) {
+      indexOfMifareCardSelection =
+          cardSelectionManager.prepareSelection(
+              readerApiFactory
+                  .createBasicCardSelector()
+                  .filterByCardProtocol(CardProtocolEnum.MIFARE_ULTRALIGHT_LOGICAL_PROTOCOL.name),
+              storageCardExtension.createStorageCardSelectionExtension(
+                  ProductType.MIFARE_ULTRALIGHT))
+      indexOfST25CardSelection =
+          cardSelectionManager.prepareSelection(
+              readerApiFactory
+                  .createBasicCardSelector()
+                  .filterByCardProtocol(CardProtocolEnum.ST25_SRT512_LOGICAL_PROTOCOL.name),
+              storageCardExtension.createStorageCardSelectionExtension(ProductType.ST25_SRT512))
+    }
 
     // Schedule the execution of the prepared card selection scenario as soon as a card is presented
     cardSelectionManager.scheduleCardSelectionScenario(
@@ -194,35 +221,64 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
     if (cardSelectionResult.activeSelectionIndex == -1) {
       return "Selection error: AID not found"
     }
-    calypsoCard = cardSelectionResult.activeSmartCard as CalypsoCard
-    // check is the DF name is the expected one (Req. TL-SEL-AIDMATCH.1)
-    if ((cardSelectionResult.activeSelectionIndex == indexOfKeypleGenericCardSelection &&
-        !CardConstant.aidMatch(CardConstant.AID_KEYPLE_GENERIC, calypsoCard.dfName)) ||
-        (cardSelectionResult.activeSelectionIndex == indexOfCdLightGtmlCardSelection &&
-            !CardConstant.aidMatch(CardConstant.AID_CD_LIGHT_GTML, calypsoCard.dfName)) ||
-        (cardSelectionResult.activeSelectionIndex == indexOfCalypsoLightCardSelection &&
-            !CardConstant.aidMatch(CardConstant.AID_CALYPSO_LIGHT, calypsoCard.dfName)) ||
-        (cardSelectionResult.activeSelectionIndex == indexOfNavigoIdfCardSelection &&
-            !CardConstant.aidMatch(CardConstant.AID_NORMALIZED_IDF, calypsoCard.dfName))) {
-      return "Unexpected DF name"
+    smartCard = cardSelectionResult.activeSmartCard
+    when (smartCard) {
+      is CalypsoCard -> { // check is the DF name is the expected one (Req. TL-SEL-AIDMATCH.1)
+        if ((cardSelectionResult.activeSelectionIndex == indexOfKeypleGenericCardSelection &&
+            !CardConstant.aidMatch(
+                CardConstant.AID_KEYPLE_GENERIC, (smartCard as CalypsoCard).dfName)) ||
+            (cardSelectionResult.activeSelectionIndex == indexOfCdLightGtmlCardSelection &&
+                !CardConstant.aidMatch(
+                    CardConstant.AID_CD_LIGHT_GTML, (smartCard as CalypsoCard).dfName)) ||
+            (cardSelectionResult.activeSelectionIndex == indexOfCalypsoLightCardSelection &&
+                !CardConstant.aidMatch(
+                    CardConstant.AID_CALYPSO_LIGHT, (smartCard as CalypsoCard).dfName)) ||
+            (cardSelectionResult.activeSelectionIndex == indexOfNavigoIdfCardSelection &&
+                !CardConstant.aidMatch(
+                    CardConstant.AID_NORMALIZED_IDF, (smartCard as CalypsoCard).dfName))) {
+          return "Unexpected DF name"
+        }
+        if ((smartCard as CalypsoCard).applicationSubtype !in
+            CardConstant.ALLOWED_FILE_STRUCTURES) {
+          return "Invalid card\nFile structure " +
+              HexUtil.toHex((smartCard as CalypsoCard).applicationSubtype) +
+              "h not supported"
+        }
+        Timber.i("Card DF Name = %s", HexUtil.toHex((smartCard as CalypsoCard).dfName))
+      }
+      is StorageCard -> {
+        Timber.i(
+            "%s Card UID = %s",
+            (smartCard as StorageCard).productType.name,
+            HexUtil.toHex((smartCard as StorageCard).uid))
+      }
     }
-    if (calypsoCard.applicationSubtype !in CardConstant.ALLOWED_FILE_STRUCTURES) {
-      return "Invalid card\nFile structure " +
-          HexUtil.toHex(calypsoCard.applicationSubtype) +
-          "h not supported"
-    }
-    Timber.i("Card DF Name = %s", HexUtil.toHex(calypsoCard.dfName))
     return null
   }
 
   fun executeControlProcedure(locations: List<Location>): CardReaderResponse {
-    return CardRepository()
-        .executeControlProcedure(
-            cardReader = readerRepository.getCardReader()!!,
-            calypsoCard = calypsoCard,
-            cardSecuritySettings = if (isSecureSessionMode) getSecuritySettings() else null,
-            locations = locations,
-            controlDateTime = LocalDateTime.now())
+    return when (smartCard) {
+      is CalypsoCard -> {
+        CalypsoCardRepository()
+            .executeControlProcedure(
+                cardReader = readerRepository.getCardReader()!!,
+                smartCard = smartCard as CalypsoCard,
+                cardSecuritySettings = if (isSecureSessionMode) getSecuritySettings() else null,
+                locations = locations,
+                controlDateTime = LocalDateTime.now())
+      }
+      is StorageCard -> {
+        StorageCardRepository()
+            .executeControlProcedure(
+                cardReader = readerRepository.getCardReader()!!,
+                smartCard = smartCard as StorageCard,
+                locations = locations,
+                controlDateTime = LocalDateTime.now())
+      }
+      else -> {
+        error("Unsupported card type")
+      }
+    }
   }
 
   private fun getSecuritySettings(): SymmetricCryptoSecuritySetting? {
