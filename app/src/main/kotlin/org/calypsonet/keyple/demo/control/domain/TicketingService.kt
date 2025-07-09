@@ -265,7 +265,7 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
         CalypsoCardRepository()
             .executeControlProcedure(
                 cardReader = readerRepository.getCardReader()!!,
-                smartCard = smartCard as CalypsoCard,
+                calypsoCard = smartCard as CalypsoCard,
                 cardSecuritySettings = if (isSecureSessionMode) getSecuritySettings() else null,
                 locations = locations,
                 controlDateTime = LocalDateTime.now())
@@ -274,7 +274,7 @@ class TicketingService @Inject constructor(private var readerRepository: ReaderR
         StorageCardRepository()
             .executeControlProcedure(
                 cardReader = readerRepository.getCardReader()!!,
-                smartCard = smartCard as StorageCard,
+                storageCard = smartCard as StorageCard,
                 locations = locations,
                 controlDateTime = LocalDateTime.now())
       }
