@@ -10,7 +10,7 @@
  *
  * SPDX-License-Identifier: BSD-3-Clause
  ****************************************************************************** */
-package org.calypsonet.keyple.demo.validation.data.model
+package org.calypsonet.keyple.demo.control.data.model
 
 enum class CardProtocolEnum {
   ISO_7816_LOGICAL_PROTOCOL,

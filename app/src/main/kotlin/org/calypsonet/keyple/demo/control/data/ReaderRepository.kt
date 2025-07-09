@@ -19,8 +19,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.withContext
 import org.calypsonet.keyple.demo.control.R
+import org.calypsonet.keyple.demo.control.data.model.CardProtocolEnum
 import org.calypsonet.keyple.demo.control.data.model.ReaderType
-import org.calypsonet.keyple.demo.validation.data.model.CardProtocolEnum
 import org.calypsonet.keyple.plugin.bluebird.BluebirdConstants
 import org.calypsonet.keyple.plugin.bluebird.BluebirdContactlessProtocols
 import org.calypsonet.keyple.plugin.bluebird.BluebirdPluginFactoryProvider
