@@ -17,6 +17,8 @@ plugins {
 //  APP CONFIGURATION
 ///////////////////////////////////////////////////////////////////////////////
 
+configurations.all { exclude(group = "com.arcao", module = "slf4j-timber") }
+
 dependencies {
   // Demo common
   implementation("org.calypsonet.keyple:keyple-demo-ticketing-common-lib:2.1.0-SNAPSHOT") {
@@ -74,8 +76,6 @@ dependencies {
   implementation("org.slf4j:slf4j-api:1.7.32")
   implementation("uk.uuid.slf4j:slf4j-android:1.7.32-0")
 }
-
-configurations.all { exclude(group = "com.arcao", module = "slf4j-timber") }
 
 ///////////////////////////////////////////////////////////////////////////////
 //  STANDARD CONFIGURATION FOR ANDROID APPLICATION KOTLIN-BASED PROJECTS
