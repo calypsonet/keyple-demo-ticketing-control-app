@@ -54,6 +54,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [2025.03.21]
 ### Changed
 - Rename repository and artifact from `keyple-android-demo-control` to `keyple-demo-ticketing-control-app`
+- Change `minSdk` from `24` -> `26`
 ### Upgraded
 - keyple-demo-common-lib `2.0.1-SNAPSHOT` -> keyple-demo-ticketing-common-lib `2.0.2-SNAPSHOT`
 - Keypop API
