@@ -4,7 +4,53 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
-
+### Added
+- Enhanced plugin management and dependency resolution in build configuration
+- Support for Storage Cards alongside Calypso cards
+- Enhanced card type display in "Card Summary" screen
+- Support for MIFARE Ultralight and ST25 SRT512 cards
+- Enhanced validation procedure documentation for both card types
+### Changed
+- Simplify `NOTICE.md` file content
+- Enhance `README.md` with detailed card type support, priority codes, and validation procedures
+- Remove minimum SDK version change from `26` back to `24`
+### Upgraded
+- Gradle plugins
+  - `com.diffplug.spotless` `6.25.0` -> `7.0.4`
+- New plugins
+  - `org.jetbrains.dokka` `1.9.20` (for documentation generation)
+- Keyple dependencies
+  - `keyple-demo-ticketing-common-lib` `2.0.2-SNAPSHOT` -> `2.1.0-SNAPSHOT`
+  - `keyple-card-calypso-java-lib` `3.1.7` -> `3.1.8`
+  - `keyple-plugin-android-nfc-java-lib` `3.0.0` -> `3.1.0`
+  - `keyple-common-java-api` `2.0.1` -> `2.0.2`
+- New Keyple APIs
+  - `keypop-storagecard-java-api` `0.2.0`
+  - `keyple-plugin-storagecard-java-api` `1.0.0`
+- Logging dependencies
+  - Replaced `com.arcao:slf4j-timber` with `uk.uuid.slf4j:slf4j-android`
+### Removed
+- Build dependencies
+  - `javax.xml.bind:jaxb-api:2.3.1`
+  - `com.sun.xml.bind:jaxb-impl:2.3.9`
+  - `org.eclipse.keyple:keyple-gradle:0.2.+`
+- Maven repositories
+  - `https://oss.sonatype.org/content/repositories/releases`
+  - `https://s01.oss.sonatype.org/content/repositories/releases`
+  - `https://oss.sonatype.org/content/repositories/snapshots`
+  - `https://s01.oss.sonatype.org/content/repositories/snapshots`
+- Legacy dependencies
+  - `org.jetbrains.kotlin:kotlin-stdlib:$kotlinVersion`
+  - `io.reactivex.rxjava2:rxjava` and `io.reactivex.rxjava2:rxandroid`
+  - `org.apache.commons:commons-lang3`
+  - `com.android.tools:desugar_jdk_libs`
+### Repository Changes
+- Added `https://central.sonatype.com/repository/maven-snapshots` (centralized Sonatype repository)
+- Maintained existing repositories: `mavenLocal()`, `mavenCentral()`, `nexus.coppernic.fr`, `google()`
+### Libraries Updated
+- Updated mock library files for Bluebird and Storage Card plugins
+- Added new Storage Card support libraries
+- 
 ## [2025.03.21]
 ### Changed
 - Rename repository and artifact from `keyple-android-demo-control` to `keyple-demo-ticketing-control-app`

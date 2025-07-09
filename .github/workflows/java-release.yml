@@ -1,0 +1,39 @@
+name: Create GitHub Release
+
+on:
+  release:
+    types:
+      - published
+  workflow_dispatch:
+
+jobs:
+  build-and-attach:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+
+      - name: Update permissions
+        run: chmod +x ./gradlew
+
+      - name: Build artifacts
+        run: ./gradlew build
+
+      - name: Collect artifacts
+        run: |
+          mkdir -p release-artifacts
+          # APKs
+          cp app/build/outputs/apk/debug/*.apk release-artifacts/ || true
+          cp app/build/outputs/apk/release/*.apk release-artifacts/ || true
+
+      - name: Upload artifacts to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: release-artifacts/*
+          token: ${{ secrets.GITHUB_TOKEN }}

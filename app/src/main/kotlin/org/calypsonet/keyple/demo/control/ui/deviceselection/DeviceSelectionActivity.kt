@@ -1,6 +1,9 @@
 /* ******************************************************************************
  * Copyright (c) 2021 Calypso Networks Association https://calypsonet.org/
  *
+ * See the NOTICE file(s) distributed with this work for additional information
+ * regarding copyright ownership.
+ *
  * This program and the accompanying materials are made available under the
  * terms of the BSD 3-Clause License which is available at
  * https://opensource.org/licenses/BSD-3-Clause.
@@ -23,7 +26,7 @@ import org.calypsonet.keyple.demo.control.data.model.ReaderType
 import org.calypsonet.keyple.demo.control.databinding.ActivityDeviceSelectionBinding
 import org.calypsonet.keyple.demo.control.ui.BaseActivity
 import org.calypsonet.keyple.demo.control.ui.SettingsActivity
-import org.calypsonet.keyple.plugin.bluebird.BluebirdPlugin
+import org.calypsonet.keyple.plugin.bluebird.BluebirdConstants
 import org.calypsonet.keyple.plugin.flowbird.FlowbirdPlugin
 
 class DeviceSelectionActivity : BaseActivity() {
@@ -39,7 +42,7 @@ class DeviceSelectionActivity : BaseActivity() {
     activityDeviceSelectionBinding.appVersion.text =
         getString(R.string.version, BuildConfig.VERSION_NAME)
     // Bluebird
-    if (BluebirdPlugin.PLUGIN_NAME.contains(mock)) {
+    if (BluebirdConstants.PLUGIN_NAME.contains(mock)) {
       activityDeviceSelectionBinding.bluebirdBtn.setBackgroundColor(Color.GRAY)
     } else {
       activityDeviceSelectionBinding.bluebirdBtn.setOnClickListener {

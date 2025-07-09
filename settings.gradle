@@ -1,3 +1,0 @@
-rootProject.name = "keyple-demo-ticketing-control-app"
-
-include ':app'
