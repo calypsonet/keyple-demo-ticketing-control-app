@@ -1,3 +1,21 @@
+# ⚠️ Repository Consolidation Notice
+
+**This repository has been merged into a unified Keyple ticketing demo repository.**
+
+All Keyple ticketing demonstration applications have been consolidated into a single repository for better maintenance
+and easier access:
+
+**New unified repository:** https://github.com/calypsonet/keyple-demo-ticketing
+
+This new repository contains:
+- Keyple Control Demo (this application)
+- Keyple Reload Demo
+- Keyple Validation Demo
+- Keyple Demo Common Library
+
+**Important:** This individual repository will be archived. Please use the new unified repository for the latest
+updates, issues, and contributions.
+
 # Keyple Control Demo
 
 This is the repository for the Keyple Android Control Demo application.
